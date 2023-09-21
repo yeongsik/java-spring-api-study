@@ -1,15 +1,21 @@
 package com.project.springapistudy.menu.service;
 
 
+import com.project.springapistudy.menu.dto.CreateMenuRequest;
+import com.project.springapistudy.menu.entity.Menu;
+import com.project.springapistudy.menu.entity.MenuType;
+import com.project.springapistudy.menu.repository.MenuRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
 
 @SpringBootTest
 public class MenuServiceTest {
 
+    @Autowired
+    private MenuRepository menuRepository;
 
 
     /*
@@ -37,8 +43,15 @@ public class MenuServiceTest {
            추가할 때 메뉴 타입은 셀렉트 타입으로 골라서 추가
            사용유무를 체크해서 진행할 수 있다. (테스트 중이거나, 문제가 발생한 음료는 사용유무 체크를 하지 않음으로 변경할 수 있는 기능)
 
+           유효성 검사
+
+
         2. Read
            어드민 계정 및 사용자가 볼 수 있는 메뉴 목록
+
+           List Read
+
+           Select One Read
 
         3. Update
            어드민 계정에서 메뉴를 수정할 수 있다.
@@ -47,6 +60,8 @@ public class MenuServiceTest {
            어드민 계정에서 메뉴 삭제
            삭제 했을 떄 real 삭제되는 것이 아니라 -> 삭제여부가 true 값으로 변경된다. YN 으로 할 지 true false로 할지 고민해보자
 
+
+
     */
 
     @Test
@@ -54,39 +69,19 @@ public class MenuServiceTest {
     void successCreateMenu () throws Exception {
 
         //given
+        CreateMenuRequest americano = new CreateMenuRequest("americano", MenuType.COFFEE, 4500, true, null);
 
         //when
+        Menu save = menuRepository.save(Menu.of(americano));
 
         //then
+        Assertions.assertEquals(americano.getName(), save.getName());
+
     }
 
-    static class Menu {
-        private Long id;
-        private String name;
-        private MenuType menuType;
-        private Integer price;
-        private Boolean isUse;
-        private LocalDateTime createDate;
-        private LocalDateTime updateDate;
-        private String menuImage;
-        private Long createAdminId;
-        private Boolean isDelete;
 
-        public Menu(Long id, String name, MenuType menuType, Integer price, Boolean isUse, LocalDateTime createDate, LocalDateTime updateDate, String menuImage, Long createAdminId, Boolean isDelete) {
-            this.id = id;
-            this.name = name;
-            this.menuType = menuType;
-            this.price = price;
-            this.isUse = isUse;
-            this.createDate = createDate;
-            this.updateDate = updateDate;
-            this.menuImage = menuImage;
-            this.createAdminId = createAdminId;
-            this.isDelete = isDelete;
-        }
-    }
 
-    static enum MenuType {
-        COFFEE, BEVERAGE, DESERT,
-    }
+
+
+
 }
