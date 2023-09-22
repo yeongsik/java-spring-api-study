@@ -1,15 +1,17 @@
 package com.project.springapistudy.menu.entity;
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.project.springapistudy.menu.dto.MenuResponse;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
 
     @Id
@@ -35,7 +37,11 @@ public class Menu {
 
     private Boolean isDelete;
 
-    public Menu(Long id, String name, MenuType menuType, Integer price, Boolean isUse, LocalDateTime createDate, LocalDateTime updateDate, String menuImage, Long createAdminId, Boolean isDelete) {
+    @OneToMany(mappedBy = "menu")
+    private List<MenuLog> menuLogList = new ArrayList<>();
+
+    @Builder
+    public Menu(Long id, String name, MenuType menuType, Integer price, Boolean isUse, LocalDateTime createDate, LocalDateTime updateDate, String menuImage, Long createAdminId, Boolean isDelete, List<MenuLog> menuLogList) {
         this.id = id;
         this.name = name;
         this.menuType = menuType;
@@ -46,14 +52,28 @@ public class Menu {
         this.menuImage = menuImage;
         this.createAdminId = createAdminId;
         this.isDelete = isDelete;
+        this.menuLogList = menuLogList;
     }
 
     public static Menu of(CreateMenuRequest createMenuRequest) {
         if (createMenuRequest.getImage() != null) {
-            return new Menu(1L, createMenuRequest.getName(), createMenuRequest.getMenuType(), createMenuRequest.getPrice(), createMenuRequest.getIsUse()
-                    , LocalDateTime.now(), null, createMenuRequest.getImage().getName(), 1L, false);
+            return Menu.builder()
+                    .id(1L)
+                    .name(createMenuRequest.getName())
+                    .menuType(createMenuRequest.getMenuType())
+                    .price(createMenuRequest.getPrice())
+                    .isUse(createMenuRequest.getIsUse())
+                    .menuImage(createMenuRequest.getImage().getName())
+                    .createDate(LocalDateTime.now())
+                    .build();
         }
-        return new Menu(1L, createMenuRequest.getName(), createMenuRequest.getMenuType(), createMenuRequest.getPrice(), createMenuRequest.getIsUse()
-                , LocalDateTime.now(), null, null, 1L, false);
+        return Menu.builder()
+                .id(1L)
+                .name(createMenuRequest.getName())
+                .menuType(createMenuRequest.getMenuType())
+                .price(createMenuRequest.getPrice())
+                .isUse(createMenuRequest.getIsUse())
+                .createDate(LocalDateTime.now())
+                .build();
     }
 }
