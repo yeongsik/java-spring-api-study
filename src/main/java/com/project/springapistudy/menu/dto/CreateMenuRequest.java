@@ -2,6 +2,7 @@ package com.project.springapistudy.menu.dto;
 
 import com.project.springapistudy.menu.entity.MenuType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 
 
 @Getter
-@AllArgsConstructor
 public class CreateMenuRequest {
 
     @NotBlank(message = "메뉴명을 입력해주세요.")
@@ -24,6 +24,13 @@ public class CreateMenuRequest {
     @NotBlank(message = "사용 유무룰 선택해주세요.")
     private final Boolean isUse;
 
-    private final MultipartFile image;
+//    private final MultipartFile image;
 
+    @Builder
+    public CreateMenuRequest(String name, MenuType menuType, Integer price, Boolean isUse) {
+        this.name = name;
+        this.menuType = menuType;
+        this.price = price;
+        this.isUse = isUse;
+    }
 }

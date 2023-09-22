@@ -6,6 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class DeleteMenuRequest {
-
     private final Long id;
 }

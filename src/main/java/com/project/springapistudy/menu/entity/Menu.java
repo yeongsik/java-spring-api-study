@@ -31,8 +31,6 @@ public class Menu {
 
     private LocalDateTime updateDate;
 
-    private String menuImage;
-
     private Long createAdminId; // 추후에 유저 API 시 연관관계 설정
 
     private Boolean isDelete;
@@ -41,7 +39,7 @@ public class Menu {
     private List<MenuLog> menuLogList = new ArrayList<>();
 
     @Builder
-    public Menu(Long id, String name, MenuType menuType, Integer price, Boolean isUse, LocalDateTime createDate, LocalDateTime updateDate, String menuImage, Long createAdminId, Boolean isDelete, List<MenuLog> menuLogList) {
+    public Menu(Long id, String name, MenuType menuType, Integer price, Boolean isUse, LocalDateTime createDate, LocalDateTime updateDate, Long createAdminId, Boolean isDelete, List<MenuLog> menuLogList) {
         this.id = id;
         this.name = name;
         this.menuType = menuType;
@@ -49,24 +47,15 @@ public class Menu {
         this.isUse = isUse;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.menuImage = menuImage;
         this.createAdminId = createAdminId;
         this.isDelete = isDelete;
         this.menuLogList = menuLogList;
     }
 
+
+
     public static Menu of(CreateMenuRequest createMenuRequest) {
-        if (createMenuRequest.getImage() != null) {
-            return Menu.builder()
-                    .id(1L)
-                    .name(createMenuRequest.getName())
-                    .menuType(createMenuRequest.getMenuType())
-                    .price(createMenuRequest.getPrice())
-                    .isUse(createMenuRequest.getIsUse())
-                    .menuImage(createMenuRequest.getImage().getName())
-                    .createDate(LocalDateTime.now())
-                    .build();
-        }
+
         return Menu.builder()
                 .id(1L)
                 .name(createMenuRequest.getName())
