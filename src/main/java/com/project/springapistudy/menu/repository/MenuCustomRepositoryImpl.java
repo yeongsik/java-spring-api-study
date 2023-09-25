@@ -1,12 +1,6 @@
 package com.project.springapistudy.menu.repository;
 
-import com.project.springapistudy.menu.dto.CreateMenuRequest;
-import com.project.springapistudy.menu.dto.MenuResponse;
-import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.Menu;
-import com.project.springapistudy.menu.entity.QMenu;
-import com.project.springapistudy.menu.entity.QMenuLog;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

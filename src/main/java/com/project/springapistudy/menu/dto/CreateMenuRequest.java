@@ -1,10 +1,8 @@
 package com.project.springapistudy.menu.dto;
 
 import com.project.springapistudy.menu.entity.MenuType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 

@@ -2,7 +2,6 @@ package com.project.springapistudy.menu.entity;
 
 
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;

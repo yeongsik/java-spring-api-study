@@ -1,7 +1,5 @@
 package com.project.springapistudy.menu.repository;
 
-import com.project.springapistudy.menu.dto.MenuResponse;
-import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.Menu;
 
 import java.util.List;

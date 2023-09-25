@@ -1,7 +1,6 @@
 package com.project.springapistudy.menu.dto;
 
 import com.project.springapistudy.menu.entity.Menu;
-import com.project.springapistudy.menu.entity.MenuLog;
 import com.project.springapistudy.menu.entity.MenuType;
 import lombok.Builder;
 import lombok.Getter;

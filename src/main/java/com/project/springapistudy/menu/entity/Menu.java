@@ -1,7 +1,6 @@
 package com.project.springapistudy.menu.entity;
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
-import com.project.springapistudy.menu.dto.MenuResponse;
 import com.project.springapistudy.menu.dto.ModifyMenuRequest;
 import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import lombok.*;
