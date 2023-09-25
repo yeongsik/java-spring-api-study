@@ -44,7 +44,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuResponse> findAllMenu(ReadMenuRequest readMenuRequest) {
+    public List<MenuResponse> findAllMenu() {
         return menuRepository.findAllMenu().stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());

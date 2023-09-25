@@ -10,7 +10,7 @@ public interface MenuService {
 
     MenuResponse findOneMenuById(ReadMenuRequest readMenuRequest);
 
-    List<MenuResponse> findAllMenu(ReadMenuRequest readMenuRequest);
+    List<MenuResponse> findAllMenu();
 
     void updateMenu(ModifyMenuRequest modifyMenuRequest);
 

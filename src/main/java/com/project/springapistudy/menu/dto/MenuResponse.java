@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class MenuResponse {
@@ -23,10 +24,10 @@ public class MenuResponse {
 
     private final Boolean isUse;
 
-    private final List<MenuLog> menuLogs;
+    private final List<MenuLogResponse> menuLogs;
 
     @Builder
-    public MenuResponse(Long id, String name, MenuType menuType, Integer price, Long createUserId, Boolean isUse, List<MenuLog> menuLogs) {
+    public MenuResponse(Long id, String name, MenuType menuType, Integer price, Long createUserId, Boolean isUse, List<MenuLogResponse> menuLogs) {
         this.id = id;
         this.name = name;
         this.menuType = menuType;
@@ -44,7 +45,7 @@ public class MenuResponse {
                 .price(menu.getPrice())
                 .createUserId(menu.getCreateAdminId())
                 .isUse(menu.getIsUse())
-                .menuLogs(menu.getMenuLogList())
+                .menuLogs(menu.getMenuLogList().stream().map(MenuLogResponse::of).collect(Collectors.toList()))
                 .build();
     }
 }

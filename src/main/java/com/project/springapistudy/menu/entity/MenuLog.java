@@ -2,6 +2,7 @@ package com.project.springapistudy.menu.entity;
 
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -18,7 +19,6 @@ public class MenuLog {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
-
 
     private LocalDateTime createLogTime;
 
@@ -44,5 +44,21 @@ public class MenuLog {
                 .adminId(menu.getCreateAdminId())
                 .action(action)
                 .build();
+    }
+
+    public LocalDateTime getCreateLogTime() {
+        return createLogTime;
+    }
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public String getChangeContents() {
+        return changeContents;
     }
 }

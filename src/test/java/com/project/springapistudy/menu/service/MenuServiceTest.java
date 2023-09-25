@@ -3,16 +3,21 @@ package com.project.springapistudy.menu.service;
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
 import com.project.springapistudy.menu.dto.MenuResponse;
+import com.project.springapistudy.menu.dto.ModifyMenuRequest;
 import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.Menu;
+import com.project.springapistudy.menu.entity.MenuLog;
+import com.project.springapistudy.menu.entity.MenuType;
+import com.project.springapistudy.menu.error.MenuNotFoundException;
 import com.project.springapistudy.menu.fixture.MenuFixture;
+import com.project.springapistudy.menu.repository.MenuLogRepository;
 import com.project.springapistudy.menu.repository.MenuRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 public class MenuServiceTest {
@@ -23,8 +28,12 @@ public class MenuServiceTest {
     @Autowired
     private MenuRepository menuRepository;
 
-    @BeforeEach
+    @Autowired
+    private MenuLogRepository menuLogRepository;
+
+    @AfterEach
     void clean() {
+        menuLogRepository.deleteAll();
         menuRepository.deleteAll();
     }
 
@@ -33,7 +42,7 @@ public class MenuServiceTest {
     void successCreateMenu () throws Exception {
 
         //given
-        CreateMenuRequest createMenuRequest = MenuFixture.SUCCESS_CREATE_MENU;
+        CreateMenuRequest createMenuRequest = MenuFixture.SUCCESS_CREATE_AMERICANO;
 
         //when
         menuService.createMenu(createMenuRequest);
@@ -45,19 +54,20 @@ public class MenuServiceTest {
     void successFindOneMenu () throws Exception {
 
         //given
-        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_MENU));
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
         ReadMenuRequest readMenuRequest = new ReadMenuRequest(save.getId());
 
         //when
         MenuResponse resultMenu = menuService.findOneMenuById(readMenuRequest);
 
         //then
-        Assertions.assertEquals(save.getId() , resultMenu.getId());
-        Assertions.assertEquals(save.getMenuType() , resultMenu.getMenuType());
-        Assertions.assertEquals(save.getPrice() , resultMenu.getPrice());
-        Assertions.assertEquals(save.getIsUse() , resultMenu.getIsUse());
-
-
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(resultMenu.getId()).as("MenuId").isEqualTo(save.getId());
+        softly.assertThat(resultMenu.getPrice()).as("Price").isEqualTo(save.getPrice());
+        softly.assertThat(resultMenu.getMenuType()).as("MenuType").isEqualTo(save.getMenuType());
+        softly.assertThat(resultMenu.getIsUse()).as("IsUse").isEqualTo(save.getIsUse());
+        softly.assertAll();
     }
 
     @Test
@@ -65,11 +75,14 @@ public class MenuServiceTest {
     void failFindOneMenuWhenNotFoundMenu () throws Exception {
 
         //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
+        ReadMenuRequest readMenuRequest = new ReadMenuRequest(save.getId() + 1L);
 
         //when
-
-        //then
-
+        Assertions.assertThrows(MenuNotFoundException.class, () -> {
+            menuService.findOneMenuById(readMenuRequest);
+        });
 
     }
 
@@ -78,16 +91,52 @@ public class MenuServiceTest {
     void successFindAllMenu() throws Exception {
 
         //given
+        menuService.createMenu(MenuFixture.SUCCESS_CREATE_AMERICANO);
+        menuService.createMenu(MenuFixture.SUCCESS_CREATE_LATTE);
+        menuService.createMenu(MenuFixture.SUCCESS_CREATE_MILKTEA);
 
         //when
+        List<MenuResponse> result = menuService.findAllMenu();
 
         //then
+        SoftAssertions softly = new SoftAssertions();
 
+        CreateMenuRequest[] testExpectArr = {MenuFixture.SUCCESS_CREATE_MILKTEA, MenuFixture.SUCCESS_CREATE_LATTE, MenuFixture.SUCCESS_CREATE_AMERICANO};
+        for (int i = 0; i < testExpectArr.length; i++) {
+            softly.assertThat(result.get(i).getName()).isEqualTo(testExpectArr[i].getName());
+            softly.assertThat(result.get(i).getPrice()).isEqualTo(testExpectArr[i].getPrice());
+            softly.assertThat(result.get(i).getMenuType()).isEqualTo(testExpectArr[i].getMenuType());
+            softly.assertThat(result.get(i).getMenuLogs().get(0).getAction()).isEqualTo("CREATE");
+        }
+        softly.assertAll();
     }
 
     @Test
     @DisplayName("메뉴 수정 - 성공")
     void successModifyMenu() throws Exception {
+
+        //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
+        ModifyMenuRequest modifyRequest = ModifyMenuRequest.builder()
+                .id(save.getId())
+                .menuType(MenuType.BEVERAGE)
+                .name(MenuFixture.SUCCESS_CREATE_MILKTEA.getName())
+                .price(MenuFixture.SUCCESS_CREATE_MILKTEA.getPrice())
+                .build();
+
+        //when
+        menuService.updateMenu(modifyRequest);
+
+        //then
+        ReadMenuRequest readMenuRequest = new ReadMenuRequest(save.getId());
+        MenuResponse resultResponse = menuService.findOneMenuById(readMenuRequest);
+        System.out.println("resultResponse = " + resultResponse);
+    }
+
+    @Test
+    @DisplayName("메뉴 수정 - 실패 (존재하지 않는 메뉴)")
+    void failModifyMenuNotFoundMenu() throws Exception {
 
         //given
 
@@ -97,8 +146,8 @@ public class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 수정 - 실패 (존재하지 않는 메뉴)")
-    void failModifyMenu() throws Exception {
+    @DisplayName("메뉴 수정 - 실패 (메뉴 이름 중복)")
+    void failModifyMenuDuplicateOtherMenu() throws Exception {
 
         //given
 
