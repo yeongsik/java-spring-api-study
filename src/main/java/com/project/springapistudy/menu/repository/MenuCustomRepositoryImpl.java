@@ -5,6 +5,7 @@ import com.project.springapistudy.menu.dto.MenuResponse;
 import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.Menu;
 import com.project.springapistudy.menu.entity.QMenu;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,23 +22,28 @@ public class MenuCustomRepositoryImpl implements MenuCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<List<MenuResponse>> findAllMenu() {
-        List<Menu> fetch = jpaQueryFactory.selectFrom(menu)
+    public List<Menu> findAllMenu() {
+        return jpaQueryFactory.selectFrom(menu)
                 .innerJoin(menu.menuLogList)
                 .fetchJoin()
                 .fetch();
-        return null;
     }
 
     @Override
-    public Optional<MenuResponse> findMenuById(ReadMenuRequest readMenuRequest) {
-
-        jpaQueryFactory.selectFrom(menu)
-                .innerJoin(menu.menuLogList)
+    public Optional<Menu> findMenuById(Menu req) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QMenu.menu)
+                .innerJoin(QMenu.menu.menuLogList)
                 .fetchJoin()
-                .where(menu.id.eq(readMenuRequest.getId()))
-                .fetch();
-        return null;
+                .where(QMenu.menu.id.eq(req.getId()))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Menu> findMenuByNameNotSameId(Menu req) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(menu)
+                .where(menu.name.eq(req.getName())
+                        .and(menu.id.notIn(req.getId())))
+                .fetchOne());
     }
 
 }

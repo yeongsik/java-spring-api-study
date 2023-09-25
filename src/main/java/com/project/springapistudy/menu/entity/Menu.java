@@ -2,6 +2,8 @@ package com.project.springapistudy.menu.entity;
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
 import com.project.springapistudy.menu.dto.MenuResponse;
+import com.project.springapistudy.menu.dto.ModifyMenuRequest;
+import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,8 +54,6 @@ public class Menu {
         this.menuLogList = menuLogList;
     }
 
-
-
     public static Menu of(CreateMenuRequest createMenuRequest) {
 
         return Menu.builder()
@@ -64,5 +64,23 @@ public class Menu {
                 .isUse(createMenuRequest.getIsUse())
                 .createDate(LocalDateTime.now())
                 .build();
+    }
+
+    public static Menu of(ReadMenuRequest readMenuRequest) {
+        return Menu.builder()
+                .id(readMenuRequest.getId())
+                .build();
+    }
+
+    public void updateFrom(ModifyMenuRequest modifyMenuRequest) {
+        name = modifyMenuRequest.getName();
+        menuType = modifyMenuRequest.getMenuType();
+        price = modifyMenuRequest.getPrice();
+        isUse = modifyMenuRequest.getIsUse();
+        updateDate = LocalDateTime.now();
+    }
+
+    public void delete() {
+        isDelete = true;
     }
 }

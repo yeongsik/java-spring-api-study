@@ -2,11 +2,13 @@ package com.project.springapistudy.menu.entity;
 
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@NoArgsConstructor
 public class MenuLog {
 
     @Id

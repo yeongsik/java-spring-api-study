@@ -35,6 +35,9 @@ public class MenuServiceTest {
 
         //then
         Assertions.assertEquals(createMenuRequest.getName(), savedMenu.getName());
+        Assertions.assertEquals(createMenuRequest.getPrice(), savedMenu.getPrice());
+        Assertions.assertEquals(createMenuRequest.getMenuType(), savedMenu.getMenuType());
+        Assertions.assertEquals(createMenuRequest.getIsUse(), savedMenu.getIsUse());
     }
 
 
