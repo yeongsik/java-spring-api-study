@@ -1,6 +1,7 @@
 package com.project.springapistudy.menu.fixture;
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
+import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.MenuType;
 
 public class MenuFixture {
@@ -11,6 +12,5 @@ public class MenuFixture {
             .menuType(MenuType.COFFEE)
             .isUse(true)
             .build();
-
 
 }

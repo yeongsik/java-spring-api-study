@@ -2,6 +2,7 @@ package com.project.springapistudy.menu.dto;
 
 import com.project.springapistudy.menu.entity.Menu;
 import com.project.springapistudy.menu.entity.MenuLog;
+import com.project.springapistudy.menu.entity.MenuType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +15,8 @@ public class MenuResponse {
 
     private final String name;
 
+    private final MenuType menuType;
+
     private final Integer price;
 
     private final Long createUserId;
@@ -23,21 +26,21 @@ public class MenuResponse {
     private final List<MenuLog> menuLogs;
 
     @Builder
-    public MenuResponse(Long id, String name, Integer price, Long createUserId, Boolean isUse, List<MenuLog> menuLogs) {
+    public MenuResponse(Long id, String name, MenuType menuType, Integer price, Long createUserId, Boolean isUse, List<MenuLog> menuLogs) {
         this.id = id;
         this.name = name;
+        this.menuType = menuType;
         this.price = price;
         this.createUserId = createUserId;
         this.isUse = isUse;
         this.menuLogs = menuLogs;
     }
 
-
-
     public static MenuResponse of(Menu menu) {
         return MenuResponse.builder()
                 .id(menu.getId())
                 .name(menu.getName())
+                .menuType(menu.getMenuType())
                 .price(menu.getPrice())
                 .createUserId(menu.getCreateAdminId())
                 .isUse(menu.getIsUse())

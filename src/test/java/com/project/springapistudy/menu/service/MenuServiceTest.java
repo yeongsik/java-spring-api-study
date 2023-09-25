@@ -2,6 +2,8 @@ package com.project.springapistudy.menu.service;
 
 
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
+import com.project.springapistudy.menu.dto.MenuResponse;
+import com.project.springapistudy.menu.dto.ReadMenuRequest;
 import com.project.springapistudy.menu.entity.Menu;
 import com.project.springapistudy.menu.fixture.MenuFixture;
 import com.project.springapistudy.menu.repository.MenuRepository;
@@ -14,6 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class MenuServiceTest {
+
+    @Autowired
+    private MenuService menuService;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -31,13 +36,7 @@ public class MenuServiceTest {
         CreateMenuRequest createMenuRequest = MenuFixture.SUCCESS_CREATE_MENU;
 
         //when
-        Menu savedMenu = menuRepository.save(Menu.of(createMenuRequest));
-
-        //then
-        Assertions.assertEquals(createMenuRequest.getName(), savedMenu.getName());
-        Assertions.assertEquals(createMenuRequest.getPrice(), savedMenu.getPrice());
-        Assertions.assertEquals(createMenuRequest.getMenuType(), savedMenu.getMenuType());
-        Assertions.assertEquals(createMenuRequest.getIsUse(), savedMenu.getIsUse());
+        menuService.createMenu(createMenuRequest);
     }
 
 
@@ -46,10 +45,18 @@ public class MenuServiceTest {
     void successFindOneMenu () throws Exception {
 
         //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_MENU));
+        ReadMenuRequest readMenuRequest = new ReadMenuRequest(save.getId());
 
         //when
+        MenuResponse resultMenu = menuService.findOneMenuById(readMenuRequest);
 
         //then
+        Assertions.assertEquals(save.getId() , resultMenu.getId());
+        Assertions.assertEquals(save.getMenuType() , resultMenu.getMenuType());
+        Assertions.assertEquals(save.getPrice() , resultMenu.getPrice());
+        Assertions.assertEquals(save.getIsUse() , resultMenu.getIsUse());
+
 
     }
 

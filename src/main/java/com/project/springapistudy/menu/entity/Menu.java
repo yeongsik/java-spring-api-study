@@ -57,7 +57,6 @@ public class Menu {
     public static Menu of(CreateMenuRequest createMenuRequest) {
 
         return Menu.builder()
-                .id(1L)
                 .name(createMenuRequest.getName())
                 .menuType(createMenuRequest.getMenuType())
                 .price(createMenuRequest.getPrice())
@@ -69,6 +68,13 @@ public class Menu {
     public static Menu of(ReadMenuRequest readMenuRequest) {
         return Menu.builder()
                 .id(readMenuRequest.getId())
+                .build();
+    }
+
+    public static Menu of(ModifyMenuRequest modifyMenuRequest) {
+        return Menu.builder()
+                .id(modifyMenuRequest.getId())
+                .name(modifyMenuRequest.getName())
                 .build();
     }
 

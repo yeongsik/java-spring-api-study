@@ -26,8 +26,9 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     public void createMenu(CreateMenuRequest createMenuRequest) {
 
-        menuRepository.findByName(createMenuRequest.getName())
-                .orElseThrow(DuplicateMenuNameException::new);
+        if (menuRepository.findByName(createMenuRequest.getName()).isPresent()) {
+            throw new DuplicateMenuNameException();
+        }
 
         Menu savedMenu = menuRepository.save(Menu.of(createMenuRequest));
         menuLogRepository.save(MenuLog.of(savedMenu , "CREATE"));
@@ -56,6 +57,10 @@ public class MenuServiceImpl implements MenuService {
 
         Menu menu = menuRepository.findById(modifyMenuRequest.getId())
                 .orElseThrow(MenuNotFoundException::new);
+
+        if (menuRepository.findMenuByNameNotSameId(Menu.of(modifyMenuRequest)).isPresent()) {
+            throw new DuplicateMenuNameException();
+        }
 
         menu.updateFrom(modifyMenuRequest);
         menuLogRepository.save(MenuLog.of(menu, "UPDATE"));
