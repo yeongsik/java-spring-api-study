@@ -3,7 +3,10 @@ package com.project.springapistudy.menu.entity;
 import com.project.springapistudy.menu.dto.CreateMenuRequest;
 import com.project.springapistudy.menu.dto.ModifyMenuRequest;
 import com.project.springapistudy.menu.dto.ReadMenuRequest;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

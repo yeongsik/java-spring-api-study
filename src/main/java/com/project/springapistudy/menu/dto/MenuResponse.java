@@ -23,16 +23,19 @@ public class MenuResponse {
 
     private final Boolean isUse;
 
+    private final Boolean isDelete;
+
     private final List<MenuLogResponse> menuLogs;
 
     @Builder
-    public MenuResponse(Long id, String name, MenuType menuType, Integer price, Long createUserId, Boolean isUse, List<MenuLogResponse> menuLogs) {
+    public MenuResponse(Long id, String name, MenuType menuType, Integer price, Long createUserId, Boolean isUse, Boolean isDelete, List<MenuLogResponse> menuLogs) {
         this.id = id;
         this.name = name;
         this.menuType = menuType;
         this.price = price;
         this.createUserId = createUserId;
         this.isUse = isUse;
+        this.isDelete = isDelete;
         this.menuLogs = menuLogs;
     }
 
@@ -44,7 +47,9 @@ public class MenuResponse {
                 .price(menu.getPrice())
                 .createUserId(menu.getCreateAdminId())
                 .isUse(menu.getIsUse())
+                .isDelete(menu.getIsDelete())
                 .menuLogs(menu.getMenuLogList().stream().map(MenuLogResponse::of).collect(Collectors.toList()))
                 .build();
     }
+
 }

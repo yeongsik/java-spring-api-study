@@ -1,13 +1,11 @@
 package com.project.springapistudy.menu.service;
 
 
-import com.project.springapistudy.menu.dto.CreateMenuRequest;
-import com.project.springapistudy.menu.dto.MenuResponse;
-import com.project.springapistudy.menu.dto.ModifyMenuRequest;
-import com.project.springapistudy.menu.dto.ReadMenuRequest;
+import com.project.springapistudy.menu.dto.*;
 import com.project.springapistudy.menu.entity.Menu;
 import com.project.springapistudy.menu.entity.MenuLog;
 import com.project.springapistudy.menu.entity.MenuType;
+import com.project.springapistudy.menu.error.DuplicateMenuNameException;
 import com.project.springapistudy.menu.error.MenuNotFoundException;
 import com.project.springapistudy.menu.fixture.MenuFixture;
 import com.project.springapistudy.menu.repository.MenuLogRepository;
@@ -131,7 +129,13 @@ public class MenuServiceTest {
         //then
         ReadMenuRequest readMenuRequest = new ReadMenuRequest(save.getId());
         MenuResponse resultResponse = menuService.findOneMenuById(readMenuRequest);
-        System.out.println("resultResponse = " + resultResponse);
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(resultResponse.getPrice()).as("Price").isEqualTo(modifyRequest.getPrice());
+        softly.assertThat(resultResponse.getMenuType()).as("MenuType").isEqualTo(modifyRequest.getMenuType());
+        softly.assertThat(resultResponse.getName()).as("MenuName").isEqualTo(modifyRequest.getName());
+        softly.assertThat(resultResponse.getIsUse()).as("IsUse").isEqualTo(modifyRequest.getIsUse());
+        softly.assertAll();
     }
 
     @Test
@@ -139,10 +143,16 @@ public class MenuServiceTest {
     void failModifyMenuNotFoundMenu() throws Exception {
 
         //given
-
+        ModifyMenuRequest modifyRequest = ModifyMenuRequest.builder()
+                .id(1L)
+                .menuType(MenuType.BEVERAGE)
+                .name(MenuFixture.SUCCESS_CREATE_MILKTEA.getName())
+                .price(MenuFixture.SUCCESS_CREATE_MILKTEA.getPrice())
+                .build();
         //when
-
-        //then
+        Assertions.assertThrows(MenuNotFoundException.class, () -> {
+            menuService.updateMenu(modifyRequest);
+        });
     }
 
     @Test
@@ -150,10 +160,21 @@ public class MenuServiceTest {
     void failModifyMenuDuplicateOtherMenu() throws Exception {
 
         //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
+        menuService.createMenu(MenuFixture.SUCCESS_CREATE_MILKTEA);
+
+        ModifyMenuRequest modifyRequest = ModifyMenuRequest.builder()
+                .id(save.getId())
+                .menuType(MenuType.BEVERAGE)
+                .name(MenuFixture.SUCCESS_CREATE_MILKTEA.getName())
+                .price(MenuFixture.SUCCESS_CREATE_MILKTEA.getPrice())
+                .build();
 
         //when
-
-        //then
+        Assertions.assertThrows(DuplicateMenuNameException.class, () -> {
+            menuService.updateMenu(modifyRequest);
+        });
     }
 
     @Test
@@ -161,10 +182,15 @@ public class MenuServiceTest {
     void successDeleteMenu() throws Exception {
 
         //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
 
         //when
+        menuService.deleteMenu(new DeleteMenuRequest(save.getId()));
+        MenuResponse actualMenu = menuService.findOneMenuById(new ReadMenuRequest(save.getId()));
 
         //then
+        Assertions.assertTrue(actualMenu.getIsDelete());
     }
 
     @Test
@@ -172,10 +198,13 @@ public class MenuServiceTest {
     void failDeleteMenu() throws Exception {
 
         //given
+        Menu save = menuRepository.save(Menu.of(MenuFixture.SUCCESS_CREATE_AMERICANO));
+        menuLogRepository.save(MenuLog.of(save, "CREATE"));
 
         //when
-
-        //then
+        Assertions.assertThrows(MenuNotFoundException.class, () -> {
+            menuService.deleteMenu(new DeleteMenuRequest(save.getId() + 2L));
+        });
     }
 
 }

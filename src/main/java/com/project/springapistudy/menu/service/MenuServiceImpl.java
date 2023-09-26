@@ -53,8 +53,6 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public void updateMenu(ModifyMenuRequest modifyMenuRequest) {
-        // 수정 시 메뉴이름이 다른 메뉴랑 겹칠 때 , id 값이 다른데 name가 같을 때
-
         Menu menu = menuRepository.findById(modifyMenuRequest.getId())
                 .orElseThrow(MenuNotFoundException::new);
 

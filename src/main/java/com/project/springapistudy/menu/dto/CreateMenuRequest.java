@@ -3,24 +3,27 @@ package com.project.springapistudy.menu.dto;
 import com.project.springapistudy.menu.entity.MenuType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 @Getter
+@NoArgsConstructor
 public class CreateMenuRequest {
 
     @NotBlank(message = "메뉴명을 입력해주세요.")
-    private final String name;
+    private String name;
 
-    @NotBlank(message = "메뉴 타입을 선택해주세요.")
-    private final MenuType menuType;
+    @NotNull(message = "메뉴 타입을 선택해주세요.")
+    private MenuType menuType;
 
-    @NotBlank(message = "가격을 입력해주세요.")
-    private final Integer price;
+    @NotNull(message = "가격을 입력해주세요.")
+    private Integer price;
 
-    @NotBlank(message = "사용 유무룰 선택해주세요.")
-    private final Boolean isUse;
+    @NotNull(message = "사용 유무룰 선택해주세요.")
+    private Boolean isUse;
 
 //    private final MultipartFile image;
 
